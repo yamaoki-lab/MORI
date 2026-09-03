@@ -2,14 +2,14 @@ name: レビュー依頼のGoogle Chat通知
 
 on:
   pull_request:
-    types: [review_requested]
+    types: [review_requested, ready_for_review]
 
 jobs:
   notify:
-    if: github.event.requested_reviewer.login == 'yamaokilab'
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
-      - name: Google Chatへ通知
+      - name: 対象確認 + Google Chatへ通知
         env:
           GCHAT_WEBHOOK_URL: ${{ secrets.GCHAT_WEBHOOK_URL }}
           GCHAT_SENSEI_ID: ${{ secrets.GCHAT_SENSEI_ID }}
@@ -25,7 +25,23 @@ jobs:
           DELETIONS: ${{ github.event.pull_request.deletions }}
           CHANGED_FILES: ${{ github.event.pull_request.changed_files }}
           LABELS_JSON: ${{ toJSON(github.event.pull_request.labels) }}
+          REQUESTED_REVIEWERS_JSON: ${{ toJSON(github.event.pull_request.requested_reviewers) }}
+          REQUESTED_TEAMS_JSON: ${{ toJSON(github.event.pull_request.requested_teams) }}
         run: |
+          # review_requested/ready_for_reviewのどちらのイベントでも,
+          # PRオブジェクト自体の「現在レビュー待ちの相手」を見れば同じロジックで
+          # 判定できる (個人指定/チーム指定のどちらも, GitHub Actionsの式構文に
+          # 頼らずjqで確実に判定する)
+          IS_TARGET=$(jq -n \
+            --argjson reviewers "$REQUESTED_REVIEWERS_JSON" \
+            --argjson teams "$REQUESTED_TEAMS_JSON" \
+            '(($reviewers // []) | any(.login == "yamaokilab")) or (($teams // []) | any(.slug == "admin"))')
+
+          if [ "$IS_TARGET" != "true" ]; then
+            echo "先生 (個人またはadminチーム) 宛のレビュー依頼ではないのでスキップします"
+            exit 0
+          fi
+
           curl -sf -X POST "$GCHAT_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "$(jq -n \
