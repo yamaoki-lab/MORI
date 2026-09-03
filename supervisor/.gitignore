@@ -1,0 +1,10 @@
+# ビルド成果物
+/mori80211
+
+# テスト
+*.test
+*.out
+
+# Go workspace (このモジュールでは使わない想定だが念のため)
+go.work
+go.work.sum
