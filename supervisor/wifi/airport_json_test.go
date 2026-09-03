@@ -66,7 +66,7 @@ func TestParseCurrentNetworkExtras(t *testing.T) {
 
 func TestParseCurrentNetworkExtras_InterfaceNotFound(t *testing.T) {
 	if _, ok := parseCurrentNetworkExtras([]byte(sampleAirportJSON), "en9"); ok {
-		t.Fatal("存在しないインターフェースなのでfalseになるはず")
+		t.Fatal("存在しないインタフェースなのでfalseになるはず")
 	}
 }
 
@@ -101,6 +101,6 @@ func TestParseOtherNetworks(t *testing.T) {
 
 func TestParseOtherNetworks_InterfaceNotFound(t *testing.T) {
 	if networks := parseOtherNetworks([]byte(sampleAirportJSON), "en9"); networks != nil {
-		t.Fatalf("存在しないインターフェースなのでnilになるはず, 実際 %+v", networks)
+		t.Fatalf("存在しないインタフェースなのでnilになるはず, 実際 %+v", networks)
 	}
 }

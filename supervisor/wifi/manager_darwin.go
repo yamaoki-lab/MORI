@@ -30,7 +30,7 @@ type darwinManager struct {
 func New(ctx context.Context) (Manager, error) {
 	iface, err := detectWiFiInterface(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("Wi-Fiインターフェースの検出に失敗しました: %w", err)
+		return nil, fmt.Errorf("Wi-Fiインタフェースの検出に失敗しました: %w", err)
 	}
 	return &darwinManager{iface: iface}, nil
 }

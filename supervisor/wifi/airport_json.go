@@ -36,7 +36,7 @@ type currentNetworkExtras struct {
 // 指定interfaceの現在接続中ネットワークの追加情報 (SSID以外) を取り出す
 // SSID (_name) はmacOSでは伏字化されている (実機確認済み) ため意図的に無視する.
 // 実際のSSIDはshortcutoutput.go (ショートカット経由) で別途取得する
-// 未接続, インターフェースが見つからない, JSON解析失敗時はいずれも (nil, false) を返す
+// 未接続, インタフェースが見つからない, JSON解析失敗時はいずれも (nil, false) を返す
 // (エラーとしては扱わない — 呼び出し側にとってはあくまで追加情報のため)
 func parseCurrentNetworkExtras(data []byte, iface string) (*currentNetworkExtras, bool) {
 	var top airPortTop
@@ -67,7 +67,7 @@ func parseCurrentNetworkExtras(data []byte, iface string) (*currentNetworkExtras
 // 返すNetworkのSSIDは常に空文字列にする — 名前が分からなくても, 電波強度や
 // チャンネル等の他の情報は実データなので, 分からないなりに一覧には載せる
 // ("名前不明のネットワークが近くにある" こと自体が情報になるため)
-// インターフェースが見つからない場合はnilを返す (エラーにはしない)
+// インタフェースが見つからない場合はnilを返す (エラーにはしない)
 func parseOtherNetworks(data []byte, iface string) []Network {
 	var top airPortTop
 	if err := json.Unmarshal(data, &top); err != nil || len(top.SPAirPortDataType) == 0 {
