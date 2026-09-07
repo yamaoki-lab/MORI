@@ -1,6 +1,9 @@
 package wifi
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestSplitNmcliTerseLine(t *testing.T) {
 	tests := []struct {
@@ -40,5 +43,26 @@ func TestParseNmcliWifiList(t *testing.T) {
 	}
 	if rows[0].Network.SignalPercent == nil || *rows[0].Network.SignalPercent != 85 {
 		t.Errorf("SignalPercent: 期待値 85, 実際 %v", rows[0].Network.SignalPercent)
+	}
+}
+
+func TestFilterEnv(t *testing.T) {
+	tests := []struct {
+		name string
+		env  []string
+		want []string
+	}{
+		{"該当なし", []string{"PATH=/usr/bin", "HOME=/home/k"}, []string{"PATH=/usr/bin", "HOME=/home/k"}},
+		{"1個だけ設定済み", []string{"PATH=/usr/bin", "LC_ALL=ja_JP.UTF-8"}, []string{"PATH=/usr/bin"}},
+		{"重複して設定済み", []string{"LC_ALL=ja_JP.UTF-8", "PATH=/usr/bin", "LC_ALL=C"}, []string{"PATH=/usr/bin"}},
+		{"空", []string{}, []string{}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := filterEnv(tt.env, "LC_ALL")
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("filterEnv(%v, \"LC_ALL\"): 期待値 %v, 実際 %v", tt.env, tt.want, got)
+			}
+		})
 	}
 }

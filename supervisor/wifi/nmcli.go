@@ -70,3 +70,16 @@ func parseSignalPercent(s string) *int {
 	}
 	return &v
 }
+
+// filterEnv は, envから指定した名前の環境変数を取り除いた新しいスライスを返す
+func filterEnv(env []string, name string) []string {
+	prefix := name + "="
+	filtered := make([]string, 0, len(env))
+	for _, kv := range env {
+		if strings.HasPrefix(kv, prefix) {
+			continue
+		}
+		filtered = append(filtered, kv)
+	}
+	return filtered
+}
