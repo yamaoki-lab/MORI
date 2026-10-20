@@ -9,9 +9,9 @@ import (
 type airPortTop struct {
 	SPAirPortDataType []struct {
 		Interfaces []struct {
-			Name                      string            `json:"_name"`
-			CurrentNetworkInformation json.RawMessage   `json:"spairport_current_network_information"`
-			OtherNetworks             []networkJSON     `json:"spairport_airport_other_local_wireless_networks"`
+			Name                      string          `json:"_name"`
+			CurrentNetworkInformation json.RawMessage `json:"spairport_current_network_information"`
+			OtherNetworks             []networkJSON   `json:"spairport_airport_other_local_wireless_networks"`
 		} `json:"spairport_airport_interfaces"`
 	} `json:"SPAirPortDataType"`
 }
